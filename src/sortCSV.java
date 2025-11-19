@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class sortCSV {
+public class SortCSV {
     public static void main(String[] args) throws Exception {
 
         List<String[]> rows = new ArrayList<>();
