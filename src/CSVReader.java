@@ -21,18 +21,22 @@ public class CSVReader {
     }
 
 
-    public Set<String> readColumnAsSet(int columnIndex) throws IOException {
-        Set<String> result = new HashSet<>();
+    public HashSet<String> readColumnAsSet(int columnIndex) throws IOException {
+        HashSet<String> result = new HashSet<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line = br.readLine(); // skip header
             line = br.readLine();
+            HashSet<String> existingCodes = new HashSet<>();
 
             while (line != null) {
                 String[] parts = line.split(delimiter);
 
                 if (columnIndex < parts.length) {
-                    result.add(parts[columnIndex].trim());
+                    if (!existingCodes.contains(parts[columnIndex].trim())) {
+                        result.add(parts[columnIndex].trim());
+                        existingCodes.add(parts[columnIndex].trim());
+                    }
                 }
 
                 line = br.readLine();

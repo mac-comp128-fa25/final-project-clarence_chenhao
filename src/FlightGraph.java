@@ -4,37 +4,58 @@ import java.util.HashSet;
 import java.util.List;
 
 public class FlightGraph {
-    private HashSet<AirportNode> nodesSet;
+    //private HashSet<AirportNode> nodesSet;
+    private HashSet<String> codeSet;
     private int numNodes;
     private int numEdges;
     private int[][] adjacencyMatrix;
-    private HashMap<AirportNode, Integer> codeToIndexMap;
+    private HashMap<String, Integer> codeToIndexMap;
+    private HashMap<AirportNode, Integer> airportNodeToIndexMap;
     private HashMap<Integer, AirportNode> indexToCodeMap;
     private CSVReader csvReader;
 
     public FlightGraph(String filePath) throws IOException {
         this.csvReader = new CSVReader(filePath);
-        this.nodesSet = csvReader.readAirportsAsSet(0);
-        this.numNodes = nodesSet.size();
+        //this.nodesSet = csvReader.readAirportsAsSet(0);
+        this.codeSet = csvReader.readColumnAsSet(0);
+        this.numNodes = codeSet.size();
         this.numEdges = 0;
         this.codeToIndexMap = createCodeToIndexMap();
+        this.airportNodeToIndexMap = createAirportNodeToIndexMap();
         this.indexToCodeMap = createIndexToCodeMap();
         this.adjacencyMatrix = createAdjacencyMatrix(csvReader.readRows());
     }
 
-    public HashMap<AirportNode, Integer> createCodeToIndexMap() {
+    // public HashSet<String> createCodeSet(HashSet<AirportNode> nodeSet){
+    //     HashSet<String> returnedSet = new HashSet<String>();
+    //     for (AirportNode node : nodeSet){
+    //         returnedSet.add(node.getCode());
+    //     }
+    //     return returnedSet;
+    // }
+
+    public HashMap<String, Integer> createCodeToIndexMap() {
+        HashMap<String, Integer> map = new HashMap<>();
+        int index = 0;
+        for (String code : codeSet) {
+            map.put(code, index++);
+        }
+        return map;
+    }
+
+    public HashMap<AirportNode, Integer> createAirportNodeToIndexMap() {
         HashMap<AirportNode, Integer> map = new HashMap<>();
         int index = 0;
-        for (AirportNode node : nodesSet) {
-            map.put(node, index++);
+        for (String code : codeSet) {
+            map.put(new AirportNode(code), index++);
         }
         return map;
     }
 
     public HashMap<Integer, AirportNode> createIndexToCodeMap() {
         HashMap<Integer, AirportNode> map = new HashMap<>();
-        for (AirportNode node : codeToIndexMap.keySet()) {
-            int index = codeToIndexMap.get(node);
+        for (AirportNode node : airportNodeToIndexMap.keySet()) {
+            int index = airportNodeToIndexMap.get(node);
             map.put(index, node);
         }
         return map;
@@ -54,12 +75,12 @@ public class FlightGraph {
         AirportNode dest = new AirportNode(row[1].trim());
         int distance = Integer.parseInt(row[2].trim());
 
-        if (!nodesSet.contains(origin) || !nodesSet.contains(dest)) {
+        if (!codeSet.contains(origin.getCode()) || !codeSet.contains(dest.getCode())) {
             return false;
         }
 
-        int originIndex = codeToIndexMap.get(origin);
-        int destIndex = codeToIndexMap.get(dest);
+        int originIndex = codeToIndexMap.get(origin.getCode());
+        int destIndex = codeToIndexMap.get(dest.getCode());
 
         if (matrix[originIndex][destIndex] == 0) {
             matrix[originIndex][destIndex] = distance;
@@ -99,7 +120,7 @@ public class FlightGraph {
     }
 
     public void printNodeSet() {
-        for (AirportNode node : nodesSet) {
+        for (AirportNode node : airportNodeToIndexMap.keySet()) {
             System.out.println(node.getCode());
         }
     }
