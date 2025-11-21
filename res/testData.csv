@@ -1,0 +1,8 @@
+origin,destination,flight_time_minutes
+ATL,ORD,99
+ORD,DEN,140
+DEN,SFO,155
+ATL,DFW,113
+DFW,SFO,185
+SFO,SEA,125
+SEA,ORD,240

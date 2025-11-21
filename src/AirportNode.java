@@ -10,4 +10,8 @@ public class AirportNode {
         this.code = code;
         this.degree = 0;
     }
+
+    public String getCode() {
+        return code;
+    }
 }
