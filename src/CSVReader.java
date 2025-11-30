@@ -46,30 +46,6 @@ public class CSVReader {
         return result;
     }
 
-    public HashSet<AirportNode> readAirportsAsSet (int columnIndex) throws IOException {
-        HashSet<AirportNode> result = new HashSet<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line = br.readLine(); // skip header
-            line = br.readLine();
-            HashSet<String> existingCodes = new HashSet<>();
-
-            while (line != null) {
-                String[] parts = line.split(delimiter);
-            
-                if (columnIndex < parts.length) {
-                    if (!existingCodes.contains(parts[columnIndex].trim())) {
-                        result.add(new AirportNode(parts[columnIndex].trim()));
-                        existingCodes.add(parts[columnIndex].trim());
-                    }
-                }
-
-                line = br.readLine();
-            }
-        }
-        return result;
-    }
-
     public List<String[]> readRows() throws IOException {
         List<String[]> rows = new ArrayList<>();
 
