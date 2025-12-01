@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ArrayList;
 
 public class FlightGraph {
     //private HashSet<AirportNode> nodesSet;
@@ -58,8 +59,35 @@ public class FlightGraph {
             numEdges++;
             return true;
         }
-
         return false;
+    }
+
+    public List<String> getNeighbors(String code) {
+        List<String> neighbors = new ArrayList<>();
+
+        if (!codeToIndexMap.containsKey(code)) {
+            return neighbors;
+        }
+
+        int index = codeToIndexMap.get(code);
+
+        for (int j = 0; j < numNodes; j++) {
+            if (adjacencyMatrix[index][j] != 0) {
+                neighbors.add(indexToCode[j]);
+            }
+        }
+        return neighbors;
+    }
+
+    public int getAirTime(String origin, String dest) {
+        if (!codeToIndexMap.containsKey(origin) || !codeToIndexMap.containsKey(dest)) {
+            throw new IllegalArgumentException("Invalid airport code(s).");
+        }
+
+        int originIdx = codeToIndexMap.get(origin);
+        int destIdx = codeToIndexMap.get(dest);
+
+        return adjacencyMatrix[originIdx][destIdx];
     }
 
     public int getNumNodes() {
@@ -109,6 +137,7 @@ public class FlightGraph {
             FlightGraph graph = new FlightGraph("res/testData.csv");
             graph.printCodes();
             graph.printAdjacencyMatrix();
+            
         } catch (IOException e) {
             e.printStackTrace();
         }

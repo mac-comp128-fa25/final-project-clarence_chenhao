@@ -1,4 +1,7 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.PriorityQueue;
 
 public class PathFinder {
     private FlightGraph flightGraph;
@@ -11,10 +14,32 @@ public class PathFinder {
         this.indexToCode = flightGraph.getIndexToCode();
     }
 
-    public PathResult findShortestPath(String originCode, String destCode) {
-        int originIndex = codeToIndexMap.get(originCode);
-        int destIndex = codeToIndexMap.get(destCode);
+    public List<PathResult> findShortestPaths(String originCode, String destCode, int k) {
+        
+        PriorityQueue<PathResult> pq = new PriorityQueue<>();
+        List<PathResult> results = new ArrayList<>();
 
-        return new PathResult(null, -1); // Placeholder
+        pq.add(new PathResult(new ArrayList<>(List.of(originCode)), 0));
+
+        while (!pq.isEmpty() && results.size() < k) {
+            PathResult currentPath = pq.poll();
+            String lastNode = currentPath.getLastCode();
+
+            if (lastNode.equals(destCode)) {
+                results.add(currentPath);
+                continue;
+            }
+
+            for (String neighborCode : flightGraph.getNeighbors(lastNode)) {
+                if (!currentPath.getPath().contains(neighborCode)) {
+                    List<String> newPathList = new ArrayList<>(currentPath.getPath());
+                    newPathList.add(neighborCode);
+                    int newTotalTime = currentPath.getTotalTime() + flightGraph.getAirTime(lastNode, neighborCode);
+                    pq.add(new PathResult(newPathList, newTotalTime));
+                }
+            }
+        }
+
+        return results;
     }
 }
