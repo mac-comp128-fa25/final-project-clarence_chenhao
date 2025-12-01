@@ -1,12 +1,14 @@
 import java.util.List;
 
-public class PathResult implements Comparable<PathResult> {
+public class PathResult {
     private List<String> path;
     private int totalTime;
+    private int totalPrice;
 
-    public PathResult(List<String> path, int totalTime){
+    public PathResult(List<String> path, int totalTime, int totalPrice) {
         this.path = path;
         this.totalTime = totalTime;
+        this.totalPrice = totalPrice;
     }
 
     public List<String> getPath() {
@@ -28,13 +30,12 @@ public class PathResult implements Comparable<PathResult> {
         return path.get(path.size() - 1);
     }
 
-    @Override
-    public int compareTo(PathResult other) {
-        return Integer.compare(this.totalTime, other.totalTime);
+    public int getTotalPrice() {
+        return totalPrice;
     }
 
     @Override
     public String toString() {
-        return "Path: " + path + ", Total Time: " + totalTime;
+        return "Path: " + path + ", Total Time: " + totalTime + ", Total Price: " + totalPrice;
     }
 }

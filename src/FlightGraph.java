@@ -9,7 +9,7 @@ public class FlightGraph {
     private HashSet<String> codeSet;
     private int numNodes;
     private int numEdges;
-    private int[][] adjacencyMatrix;
+    private int[][][] adjacencyMatrix;
     private String[] indexToCode;
     private HashMap<String, Integer> codeToIndexMap;
     private CSVReader csvReader;
@@ -33,8 +33,8 @@ public class FlightGraph {
         return map;
     }
 
-    public int[][] createAdjacencyMatrix(List<String[]> csvRows) {
-        int[][] matrix = new int[numNodes][numNodes];
+    public int[][][] createAdjacencyMatrix(List<String[]> csvRows) {
+        int[][][] matrix = new int[numNodes][numNodes][2];
 
         for (String[] row : csvRows) {
             addEdge(matrix, row);
@@ -42,10 +42,11 @@ public class FlightGraph {
         return matrix;
     }
 
-    public boolean addEdge(int[][] matrix, String[] row) {
+    public boolean addEdge(int[][][] matrix, String[] row) {
         String origin = row[0].trim();
         String dest = row[1].trim();
         int distance = Integer.parseInt(row[2].trim());
+        int cost = Integer.parseInt(row[3].trim());
 
         if (!codeSet.contains(origin) || !codeSet.contains(dest)) {
             return false;
@@ -54,8 +55,9 @@ public class FlightGraph {
         int originIndex = codeToIndexMap.get(origin);
         int destIndex = codeToIndexMap.get(dest);
 
-        if (matrix[originIndex][destIndex] == 0) {
-            matrix[originIndex][destIndex] = distance;
+        if (matrix[originIndex][destIndex][0] == 0) {
+            matrix[originIndex][destIndex][0] = distance;
+            matrix[originIndex][destIndex][1] = cost;
             numEdges++;
             return true;
         }
@@ -72,7 +74,7 @@ public class FlightGraph {
         int index = codeToIndexMap.get(code);
 
         for (int j = 0; j < numNodes; j++) {
-            if (adjacencyMatrix[index][j] != 0) {
+            if (adjacencyMatrix[index][j][0] != 0) {
                 neighbors.add(indexToCode[j]);
             }
         }
@@ -87,7 +89,18 @@ public class FlightGraph {
         int originIdx = codeToIndexMap.get(origin);
         int destIdx = codeToIndexMap.get(dest);
 
-        return adjacencyMatrix[originIdx][destIdx];
+        return adjacencyMatrix[originIdx][destIdx][0];
+    }
+
+    public int getCost(String origin, String dest) {
+        if (!codeToIndexMap.containsKey(origin) || !codeToIndexMap.containsKey(dest)) {
+            throw new IllegalArgumentException("Invalid airport code(s).");
+        }
+
+        int originIdx = codeToIndexMap.get(origin);
+        int destIdx = codeToIndexMap.get(dest);
+
+        return adjacencyMatrix[originIdx][destIdx][1];
     }
 
     public int getNumNodes() {
@@ -98,7 +111,7 @@ public class FlightGraph {
         return numEdges;
     }
 
-    public int[][] getAdjacencyMatrix() {
+    public int[][][] getAdjacencyMatrix() {
         return adjacencyMatrix;
     }
 
@@ -137,7 +150,7 @@ public class FlightGraph {
             FlightGraph graph = new FlightGraph("res/testData.csv");
             graph.printCodes();
             graph.printAdjacencyMatrix();
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }

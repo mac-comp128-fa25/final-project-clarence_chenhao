@@ -16,10 +16,12 @@ public class HomeApp {
     
     public static void main(String[] args) {
         System.out.println("Welcome to the Flight Path Finder Application!");
-        HomeApp app = new HomeApp("res/flightData.csv");
+        HomeApp app = new HomeApp("res/flightDataPrice.csv");
 
         // Example usage
-        List<PathResult> result = app.pathFinder.findShortestPaths("DEN", "ORD", 3);
-        System.out.println(result);
+        List<PathResult> timeResult = app.pathFinder.findShortestPaths("MSP", "JFK", 3, PathComparators.BY_TIME);
+        System.out.println(timeResult);
+        List<PathResult> costResult = app.pathFinder.findShortestPaths("MSP", "JFK", 3, PathComparators.BY_COST);
+        System.out.println(costResult);
     }
 }
