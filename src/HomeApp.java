@@ -18,7 +18,7 @@ public class HomeApp {
         System.out.println("Welcome to the Flight Path Finder Application!");
         HomeApp app = new HomeApp("res/flightDataPrice.csv");
 
-        // Example usage
+        // Tests
         List<PathResult> timeResult = app.pathFinder.findShortestPaths("MSP", "JFK", 3, PathComparators.BY_TIME);
         System.out.println(timeResult);
         List<PathResult> costResult = app.pathFinder.findShortestPaths("MSP", "JFK", 3, PathComparators.BY_COST);

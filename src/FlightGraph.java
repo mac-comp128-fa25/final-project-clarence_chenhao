@@ -103,6 +103,13 @@ public class FlightGraph {
         return adjacencyMatrix[originIdx][destIdx][1];
     }
 
+    public double getDensity() {
+        if (numNodes <= 1) {
+            return 0.0;
+        }
+        return (1.0 * numEdges) / (numNodes * (numNodes - 1));
+    }
+
     public int getNumNodes() {
         return numNodes;
     }
@@ -147,10 +154,9 @@ public class FlightGraph {
 
     public static void main(String[] args) {
         try {
-            FlightGraph graph = new FlightGraph("res/testData.csv");
+            FlightGraph graph = new FlightGraph("res/flightDataPrice.csv");
             graph.printCodes();
-            graph.printAdjacencyMatrix();
-
+            System.out.println(graph.getDensity());
         } catch (IOException e) {
             e.printStackTrace();
         }
