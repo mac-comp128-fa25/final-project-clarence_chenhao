@@ -152,6 +152,10 @@ public class FlightGraph {
         }
     }
 
+    public HashSet<String> getCodeSet(){
+        return codeSet;
+    }
+
     public static void main(String[] args) {
         try {
             FlightGraph graph = new FlightGraph("res/flightDataPrice.csv");
