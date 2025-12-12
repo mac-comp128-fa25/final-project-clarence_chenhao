@@ -30,6 +30,13 @@ public class PathResult {
         return path.get(path.size() - 1);
     }
 
+    public String getFirstCode() {
+        if (path.isEmpty()) {
+            return null;
+        }
+        return path.get(0);
+    }
+
     public int getTotalPrice() {
         return totalPrice;
     }
