@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.List;
 import java.awt.Color;
 
+/**
+ * HomeApp class that sets up the UI for the Flight Path Finder application.
+ */
 public class HomeApp {
     FlightGraph flightGraph;
     PathFinder pathFinder;
@@ -25,6 +28,10 @@ public class HomeApp {
     private Button byCostButton;
 
 
+    /**
+     * Constructor for HomeApp.
+     * @param filePath file path to the CSV file containing flight data.
+     */
     public HomeApp(String filePath) {
         try {
             flightGraph = new FlightGraph(filePath);
@@ -36,7 +43,7 @@ public class HomeApp {
     }
 
     /**
-     * Every canvas component is initiated here.
+     * Sets up the UI components.
      */
     public void setupUI() {
         canvas.setBackground(new Color(0xADD8E6));
@@ -72,6 +79,9 @@ public class HomeApp {
         byCostButton.setCenter(300, 750);
     }
 
+    /**
+     * Creates the first page of the UI.
+     */
     public void createFirstPage(){
         canvas.removeAll();
         canvas.add(firstPageTitle);
@@ -82,8 +92,11 @@ public class HomeApp {
         canvas.add(searchButton);
     }
 
+    /**
+     * Tests if the input airport codes are valid.
+     * @return true if both codes are valid, false otherwise.
+     */
     public boolean testCodeValid() {
-
         boolean originIsValid = flightGraph.getCodeSet().contains(originInput.getText().toUpperCase());
         boolean destIsValid = flightGraph.getCodeSet().contains(destInput.getText().toUpperCase());
 
@@ -127,8 +140,10 @@ public class HomeApp {
         return false;
     }
 
+    /**
+     * Creates the second page of the UI sorted by time.
+     */
     public void createSecondPageByTime(){
-
         if(testCodeValid()){
             canvas.removeAll();
             canvas.add(secondPageTitle);
@@ -140,8 +155,10 @@ public class HomeApp {
         }
     }
 
+    /**
+     * Creates the second page of the UI sorted by cost.
+     */
     public void createSecondPageByCost(){
-
         if(testCodeValid()){
             canvas.removeAll();
             canvas.add(secondPageTitle);
@@ -153,14 +170,14 @@ public class HomeApp {
         }
     }
 
-
+    /**
+     * Print the results sorted by time.
+     */
     public void printResultByTime(){
-
         List<PathResult> resultsByTime = pathFinder.findShortestPaths(originInput.getText().toUpperCase(), 
                                                                     destInput.getText().toUpperCase(), 
                                                                     10, 
                                                                     PathComparators.BY_TIME);
-
         for (int i = 0; i < resultsByTime.size(); i++){
             PathResult result = resultsByTime.get(i);
             GraphicsGroup singleEntry = createSingleEntry(result, 0, 50 + 30 * i);
@@ -169,8 +186,10 @@ public class HomeApp {
 
     }
 
+    /**
+     * Print the results sorted by cost.
+     */
     public void printResultByCost(){
-
         List<PathResult> resultsByCost = pathFinder.findShortestPaths(originInput.getText().toUpperCase(), 
                                                                     destInput.getText().toUpperCase(), 
                                                                     10, 
@@ -238,7 +257,9 @@ public class HomeApp {
         return singleEntry;
     }
 
-    
+    /**
+     * Main method to run the Flight Path Finder application.
+     */
     public static void main(String[] args) {
         System.out.println("Welcome to the Flight Path Finder Application!");
         HomeApp app = new HomeApp("res/flightDataPrice.csv");

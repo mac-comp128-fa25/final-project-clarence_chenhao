@@ -1,20 +1,30 @@
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 
+/**
+ * PathFinder class that finds the shortest paths between airports.
+ */
 public class PathFinder {
     private FlightGraph flightGraph;
-    private HashMap<String, Integer> codeToIndexMap;
-    private String[] indexToCode;
 
+    /**
+     * Constructor for PathFinder.
+     * @param flightGraph the FlightGraph object representing the flight network.
+     */
     public PathFinder(FlightGraph flightGraph) {
         this.flightGraph = flightGraph;
-        this.codeToIndexMap = flightGraph.getCodeToIndexMap();
-        this.indexToCode = flightGraph.getIndexToCode();
     }
 
+    /**
+     * Finds the k shortest paths between the origin and destination airport codes using the specified comparator for sorting.
+     * @param originCode the origin airport code.
+     * @param destCode the destination airport code.
+     * @param k the number of shortest paths to find.
+     * @param comparator the comparator to sort the paths.
+     * @return A list of PathResult objects representing the k shortest paths.
+     */
     public List<PathResult> findShortestPaths(String originCode, String destCode, int k, Comparator<PathResult> comparator) {
         
         PriorityQueue<PathResult> pq = new PriorityQueue<>(comparator);
@@ -41,7 +51,6 @@ public class PathFinder {
                 }
             }
         }
-
         return results;
     }
 }
