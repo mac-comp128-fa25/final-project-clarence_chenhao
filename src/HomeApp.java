@@ -1,11 +1,8 @@
 import edu.macalester.graphics.*;
 import edu.macalester.graphics.ui.*;
-import edu.macalester.graphics.events.*;
 import java.io.IOException;
 import java.util.List;
 import java.awt.Color;
-import java.awt.Paint;
-import java.awt.color.*;
 
 public class HomeApp {
     FlightGraph flightGraph;
@@ -23,8 +20,9 @@ public class HomeApp {
     private GraphicsText destWrongMessage = new GraphicsText(("Enter a valid airport code"), 210, 170);
     private boolean originWrongMessageAdded = false;
     private boolean destWrongMessageAdded = false;
-    private Boolean isSecondPage = false;
     private Button goBackToFirstPageButton;
+    private Button byTimeButton;
+    private Button byCostButton;
 
 
     public HomeApp(String filePath) {
@@ -66,6 +64,12 @@ public class HomeApp {
 
         goBackToFirstPageButton = new Button("<");
         goBackToFirstPageButton.setPosition(5, 5);
+
+        byTimeButton = new Button("filter by time");
+        byTimeButton.setCenter(150, 750);
+
+        byCostButton = new Button("filter by price");
+        byCostButton.setCenter(300, 750);
     }
 
     public void createFirstPage(){
@@ -88,7 +92,6 @@ public class HomeApp {
             originInput.setBackground(new Color(0xFFFFFF));
             destWrongMessageAdded = false;
             destInput.setBackground(new Color(0xFFFFFF));
-            isSecondPage = true;
             return true;
         }
 
@@ -124,15 +127,62 @@ public class HomeApp {
         return false;
     }
 
-    public void createSecondPage(){
+    public void createSecondPageByTime(){
 
         if(testCodeValid()){
             canvas.removeAll();
             canvas.add(secondPageTitle);
             canvas.add(goBackToFirstPageButton);
+            canvas.add(byCostButton);
+            canvas.add(byTimeButton);
+
+            printResultByTime();                       
         }
     }
 
+    public void createSecondPageByCost(){
+
+        if(testCodeValid()){
+            canvas.removeAll();
+            canvas.add(secondPageTitle);
+            canvas.add(goBackToFirstPageButton);
+            canvas.add(byCostButton);
+            canvas.add(byTimeButton);
+
+            printResultByCost();         
+        }
+    }
+
+
+    public void printResultByTime(){
+
+        List<PathResult> resultsByTime = pathFinder.findShortestPaths(originInput.getText().toUpperCase(), 
+                                                                    destInput.getText().toUpperCase(), 
+                                                                    10, 
+                                                                    PathComparators.BY_TIME);
+
+        for (int i = 0; i < resultsByTime.size(); i++){
+            PathResult result = resultsByTime.get(i);
+            GraphicsGroup singleEntry = createSingleEntry(result, 0, 50 + 30 * i);
+            canvas.add(singleEntry);
+        }
+
+    }
+
+    public void printResultByCost(){
+
+        List<PathResult> resultsByCost = pathFinder.findShortestPaths(originInput.getText().toUpperCase(), 
+                                                                    destInput.getText().toUpperCase(), 
+                                                                    10, 
+                                                                    PathComparators.BY_COST);
+
+        for (int i = 0; i < resultsByCost.size(); i++){
+            PathResult result = resultsByCost.get(i);
+            GraphicsGroup singleEntry = createSingleEntry(result, 0, 50 + 30 * i);
+            canvas.add(singleEntry);
+        }
+
+    }
 
     /**
      * Draw Single Entry on the second page.
@@ -141,17 +191,49 @@ public class HomeApp {
      * @param y Y-coordinator of top-left corner of the Graphics Group
      * @return GraphicGroup
      */
-    public GraphicsGroup drawSingleEntry(PathResult pathResult, int x, int y){
+    public GraphicsGroup createSingleEntry(PathResult pathResult, int x, int y){
         
         GraphicsGroup singleEntry = new GraphicsGroup(x, y);
 
         GraphicsText originCode = new GraphicsText(pathResult.getFirstCode().toString());
         singleEntry.add(originCode, x+50, y+50);
         GraphicsText destCode = new GraphicsText(pathResult.getLastCode().toString());
-        singleEntry.add(destCode, x+300, y+50);
+        singleEntry.add(destCode, x+290, y+50);
 
-        Line arrow = new Line(x+100, y+60, x+270, y+60);
+        Line arrow = new Line(x+100, y+50, x+270, y+50);
         singleEntry.add(arrow);
+
+        List<String> connectionAirports = pathResult.getConnectionAirports();
+
+        if (connectionAirports == null){
+            GraphicsText directText = new GraphicsText("Direct");
+            singleEntry.add(directText);
+            directText.setCenter(x+182, y+37);
+        }
+        else if (connectionAirports.size() == 1){
+            GraphicsText airport = new GraphicsText(connectionAirports.get(0));
+            singleEntry.add(airport);
+            airport.setCenter(x+182, y+37);
+        }
+        else if (connectionAirports.size() == 2){
+            GraphicsText airports = new GraphicsText(connectionAirports.get(0) + ", " + connectionAirports.get(1));
+            singleEntry.add(airports);
+            airports.setCenter(x+182, y+37);
+        }
+        else {
+            GraphicsText tooMuch = new GraphicsText("3+ transfers");
+            singleEntry.add(tooMuch);
+            tooMuch.setCenter(x+182, y+37);
+        }
+
+        GraphicsText time = new GraphicsText(pathResult.timeToString());
+        singleEntry.add(time);
+        time.setCenter(x+182, y+65);
+
+        GraphicsText cost = new GraphicsText(pathResult.costToString());
+        singleEntry.add(cost);
+        cost.setCenter(x+360, y+47);
+        cost.setFont("serif", FontStyle.BOLD, 20);
 
         return singleEntry;
     }
@@ -162,13 +244,10 @@ public class HomeApp {
         HomeApp app = new HomeApp("res/flightDataPrice.csv");
         app.setupUI();
         app.createFirstPage();
-        app.searchButton.onClick(() -> app.createSecondPage());
+        app.searchButton.onClick(() -> app.createSecondPageByTime());
         app.goBackToFirstPageButton.onClick(() -> app.createFirstPage());
+        app.byTimeButton.onClick(() -> app.createSecondPageByTime());
+        app.byCostButton.onClick(() -> app.createSecondPageByCost());
 
-        // Tests
-    //     List<PathResult> timeResult = app.pathFinder.findShortestPaths("MSP", "JFK", 3, PathComparators.BY_TIME);
-    //     System.out.println(timeResult);
-    //     List<PathResult> costResult = app.pathFinder.findShortestPaths("MSP", "JFK", 3, PathComparators.BY_COST);
-    //     System.out.println(costResult);
     }
 }

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class PathResult {
@@ -30,6 +31,20 @@ public class PathResult {
         return path.get(path.size() - 1);
     }
 
+    public List<String> getConnectionAirports() {
+
+        if (path.size() < 3){
+            return null;
+        }
+
+        List<String> airports = new ArrayList<String>();
+        for (int i = 1; i < path.size() - 1; i++){
+            airports.add(path.get(i));
+        }
+
+        return airports;
+    }
+
     public String getFirstCode() {
         if (path.isEmpty()) {
             return null;
@@ -41,8 +56,11 @@ public class PathResult {
         return totalPrice;
     }
 
-    @Override
-    public String toString() {
-        return "Path: " + path + ", Total Time: " + totalTime + ", Total Price: " + totalPrice;
+    public String timeToString() {
+        return totalTime + "min";
+    }
+
+    public String costToString() {
+        return "$" + totalPrice ;
     }
 }
