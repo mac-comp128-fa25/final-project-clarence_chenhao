@@ -56,12 +56,12 @@ public class HomeApp {
         secondPageTitle.setFont("serif", FontStyle.BOLD, 42);
         secondPageTitle.setCenter(225,50);
         
-        originInputLabel = new GraphicsText("FROM :");
+        originInputLabel = new GraphicsText("From :");
         originInput = new TextField();
         originInputLabel.setCenter(100,130);
         originInput.setCenter(100, 150);
 
-        destInputLabel = new GraphicsText("TO :");
+        destInputLabel = new GraphicsText("To :");
         destInput = new TextField();
         destInputLabel.setCenter(300, 130);
         destInput.setCenter(300, 150);
