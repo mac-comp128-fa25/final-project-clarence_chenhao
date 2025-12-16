@@ -1,5 +1,9 @@
 # Flight Path Finder
 
+## Time & Authors
+### COMP128 FA25
+### Clarence Wang & Chenhao Ma
+
 ## Project Description and Expected Functionality
 In modern air travel, it is often helpful to compare not just a single flight, but multiple possible flight paths between two cities. Our project’s goal is to build a simple flight search engine that, given an origin and destination airport, returns several flight paths, sorted either by total travel time or by total ticket cost.
 
@@ -64,6 +68,6 @@ a. Current functionality: Our current project uses made-up data with no time inf
 b. Potential Improvement: We can incorporate real-world data on departure and arrival times to allow more variation in price and airtime based on how early or late the flight is and on how many flights are scheduled on a given day.
 
 ## Sources Used
-    The Dijkstra’s Algorithm Wikipedia page
+The Dijkstra’s Algorithm Wikipedia page
 
 
