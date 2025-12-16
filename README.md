@@ -1,7 +1,9 @@
 # Flight Path Finder
 
-## Time & Authors
+## Time
 ### COMP128 FA25
+
+## Authors
 ### Clarence Wang & Chenhao Ma
 
 ## Project Description and Expected Functionality
