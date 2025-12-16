@@ -8,28 +8,28 @@ Our system reads a CSV file containing estimated flight data and builds a direct
 The user interacts with the program through a simple graphical interface built with the KiltGraphics library. 
 
 ### Expected Functionality
-    The user will start the program by hitting the “run” button in the “HomeApp” class.
-    The user will then fill in 2 text fields in the KiltGraphics UI to enter valid airport codes for the origin and destination.
-    The user will then hit the “GO” button, which will:
-    Go to the results page if valid airport codes are entered.
-    Prompt the user to enter valid airport codes if invalid ones are entered.
-    The results page will display up to 10 results based on flight time.
-    The user will then be given the choice to toggle between time and cost priority.
+1. The user will start the program by hitting the “run” button in the “HomeApp” class.
+2. The user will then fill in 2 text fields in the KiltGraphics UI to enter valid airport codes for the origin and destination.
+3. The user will then hit the “GO” button, which will:
+4. Go to the results page if valid airport codes are entered.
+5. Prompt the user to enter valid airport codes if invalid ones are entered.
+6. The results page will display up to 10 results based on flight time.
+7. The user will then be given the choice to toggle between time and cost priority.
 
 ## Implementation Details
 Our code functions as follows:
-    Data loading
-    The program uses the helper class CSVReader to read a CSV file storing flight information, where each row represents one flight with the columns from left to right being: OriginAirport, DestinationAirport, Airtime(minutes), Cost(USD)
-    From the file, we identify all unique airport codes and store them in a HashSet to determine the total number of nodes in our graph. We create a HashMap that maps each airport code (String) to an integer index.
+### 1. Data loading
+a. The program uses the helper class CSVReader to read a CSV file storing flight information, where each row represents one flight with the columns from left to right being: OriginAirport, DestinationAirport, Airtime(minutes), Cost(USD)
+b. From the file, we identify all unique airport codes and store them in a HashSet to determine the total number of nodes in our graph. We create a HashMap that maps each airport code (String) to an integer index.
 
-    Graph Construction
-    We then read the file by row and represent the flight network data as a weighted directed graph, where each vertex corresponds to an airport and each edge to a directed flight. The weights of each edge are the airtime and cost data.
-    The graph is stored as a 3D integer array, which we will explain in greater detail in a later section.
-    Path Finding Algorithm
-    We then implement a variation on Dijkstra’s algorithm to allow us to find the shortest k paths between any pair of vertices. Details of the algorithm will also be explained in the next section.
-    The result is then sorted using a priority queue and is ready to be output to the user.
-    UI
-    We then draw the UI with KiltGraphics and allow the user to interact with the program through the UI rather than the console.
+### 2. Graph Construction
+a. We then read the file by row and represent the flight network data as a weighted directed graph, where each vertex corresponds to an airport and each edge to a directed flight. The weights of each edge are the airtime and cost data.
+b. The graph is stored as a 3D integer array, which we will explain in greater detail in a later section.
+### 3. Path Finding Algorithm
+a. We then implement a variation on Dijkstra’s algorithm to allow us to find the shortest k paths between any pair of vertices. Details of the algorithm will also be explained in the next section.
+b. The result is then sorted using a priority queue and is ready to be output to the user.
+### 4. UI
+a. We then draw the UI with KiltGraphics and allow the user to interact with the program through the UI rather than the console.
 
 ## Algorithm and Data Structure Choice
 ### Algorithm
@@ -44,20 +44,24 @@ In this project, we adapt Dijkstra’s algorithm by running it on custom path ob
 
 ### Data Structure Choice
 For this project, we had to make several key decisions regarding data structures. The most significant choices were how to represent the graph and how to manage the exploration of paths.
-Graph Representation: Adjacency Matrix vs. Adjacency List
+
+#### Graph Representation: Adjacency Matrix vs. Adjacency List
 Since we are using a BFS algorithm, it seems natural to use an adjacency list, since the algorithm requires visiting each neighbour of each node. In an adjacency list implementation, this results in a time complexity of O(deg(u)) for each node u. The space complexity of this implementation would be O(V+E), where V is the number of vertices and E is the number of edges, which favours sparse graphs.
-    We chose to use an adjacency matrix representation for our project. This is slightly less efficient with a time complexity for each node of  O(n), n being the number of nodes, and a space efficiency of O(V^2). This is justified because we are using a dense graph with a density of roughly 0.55, in which more than half of the edges are present. We expect real flight data graphs to be even denser as central hubs connect to hundreds of other airports, meaning that O(deg(u)) ≈ O(n) and O(V+E) ≈ O(V^2), making implementation comparable in terms of both time and space efficiency with an adjacency list implementation.
-    We benefit from an adjacency array implementation in two ways. Firstly, it allows us to implement a weighted multi-graph using a 3D array int[][][], where the first two dimensions correspond to the standard adjacency matrix, and each entry is a 2-element array that stores time and price data in a compact package without requiring a custom Edge class. Secondly, it gives us a O(1) time efficiency for checking whether an edge exists and retrieving its weights, instead of O(n) for adjacency lists. This makes our getter functions highly efficient and allows a quick check for direct flights.
+
+We chose to use an adjacency matrix representation for our project. This is slightly less efficient with a time complexity for each node of  O(n), n being the number of nodes, and a space efficiency of O(V^2). This is justified because we are using a dense graph with a density of roughly 0.55, in which more than half of the edges are present. We expect real flight data graphs to be even denser as central hubs connect to hundreds of other airports, meaning that O(deg(u)) ≈ O(n) and O(V+E) ≈ O(V^2), making implementation comparable in terms of both time and space efficiency with an adjacency list implementation.
+
+We benefit from an adjacency array implementation in two ways. Firstly, it allows us to implement a weighted multi-graph using a 3D array int[][][], where the first two dimensions correspond to the standard adjacency matrix, and each entry is a 2-element array that stores time and price data in a compact package without requiring a custom Edge class. Secondly, it gives us a O(1) time efficiency for checking whether an edge exists and retrieving its weights, instead of O(n) for adjacency lists. This makes our getter functions highly efficient and allows a quick check for direct flights.
 
 ## Potential Improvements
-    Although we have completed all of our intended features with no significant bugs, there is definitely room for improvement and additional features.
+Although we have completed all of our intended features with no significant bugs, there is definitely room for improvement and additional features.
 
-    Drop-down menu:
-    Current functionality: We use two text fields for the user to enter airport codes, and we employ defensive programming to catch user errors.
-    Potential Improvement: We can use a dropdown menu with all valid airports in alphabetical order so the user won’t make a mistake.
-    Real data with time:
-    Current functionality: Our current project uses made-up data with no time information, assuming that only one flight is available between each pair of airports.
-    Potential Improvement: We can incorporate real-world data on departure and arrival times to allow more variation in price and airtime based on how early or late the flight is and on how many flights are scheduled on a given day.
+### 1. Drop-down menu:
+    
+a. Current functionality: We use two text fields for the user to enter airport codes, and we employ defensive programming to catch user errors.
+b. Potential Improvement: We can use a dropdown menu with all valid airports in alphabetical order so the user won’t make a mistake.
+### 2. Real data with time:
+a. Current functionality: Our current project uses made-up data with no time information, assuming that only one flight is available between each pair of airports.
+b. Potential Improvement: We can incorporate real-world data on departure and arrival times to allow more variation in price and airtime based on how early or late the flight is and on how many flights are scheduled on a given day.
 
 ## Sources Used
     The Dijkstra’s Algorithm Wikipedia page
